@@ -1,8 +1,3 @@
-from random import randint
-matrix = [['0' for x in range(10)]for y in range(10)]
-ships = ['C','B','R','S','D']
-length = [5,4,3,3,2]
-txt = open('ships.txt','w')		
 
 #place the ship horizontally
 def write_at_x(a,b,x,l):
@@ -14,6 +9,19 @@ def write_at_y(a,b,x,l):
 	for i in range(a,a+l):
 		matrix[i][b] = x
 
+#checks if placed ship is adjecent with previously placed ship.
+def checkIfAdjecent(a,b,d,l):
+	if d==0:
+		for i in range(b,b+l):
+			if (a-1>=0 and matrix[a-1][i] in ships) or (a+1<=9 and matrix[a+1][i] in ships):
+				return False
+	else:
+		for i in range(a,a+l):
+			if (b-1>=0 and matrix[i][b-1] in ships) or (b+1<=9 and matrix[i][b+1] in ships):
+				return False
+
+	return True						
+
 #check if the ship can be placed at the random coordinates
 def check(a,b,d,l):
 	flag=0
@@ -21,10 +29,10 @@ def check(a,b,d,l):
 		if b+l>10:
 			return False
 		for i in range(b,b+l):
-			if matrix[a][i]=='C' or matrix[a][i]=='B' or matrix[a][i]=='R' or matrix[a][i]=='S' or matrix[a][i]=='D':
+			if (matrix[a][i] in ships) or (b+l<=9 and matrix[a][b+l] in ships) or (b-1>=0 and matrix[a][b-1] in ships):
 				flag=1
 				break
-		if flag==1:
+		if flag==1 or not(checkIfAdjecent(a,b,d,l)):
 			return False
 		else:
 			return True
@@ -32,10 +40,10 @@ def check(a,b,d,l):
 		if a+l>10:
 			return False
 		for i in range(a,a+l):
-			if matrix[i][b]=='C' or matrix[i][b]=='B' or matrix[i][b]=='R' or matrix[i][b]=='S' or matrix[i][b]=='D':
+			if (matrix[i][b] in ships) or (a+l<=9 and matrix[a+l][b] in ships) or (a-1>=0 and matrix[a-1][b] in ships):
 				flag=1
 				break
-		if flag==1:
+		if flag==1 or not(checkIfAdjecent(a,b,d,l)):
 			return False
 		else:
 			return True
@@ -43,6 +51,13 @@ def check(a,b,d,l):
 
 #place all the ships
 def main():
+	from random import randint
+	global matrix,ships,length
+	matrix = [['0' for x in range(10)]for y in range(10)]
+	ships = ['C','B','R','S','D']
+	length = [5,4,3,3,2]		
+
+	txt = open('ships.txt','w')
 	ship =""
 	idx=0
 	for x in ships:
@@ -71,4 +86,5 @@ def main():
 			else:
 				ship+=matrix[i][j]+"\n"			
 
-	txt.write(ship)				
+	txt.write(ship)
+	txt.close()			
